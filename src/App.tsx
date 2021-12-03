@@ -55,9 +55,9 @@ const isValidAmount = (amount: string): boolean => {
 };
 const App = () => {
     const [rates, setRates] = useState<Rate[]>([]);
-    const [selectedRate, setSelectedRate] = useState<Rate | null>(null);
+    const [selectedRate, setSelectedRate] = useState<Rate | undefined>();
     const [amount, setAmount] = useState<string>('');
-    const [result, setResult] = useState<number | null>(null);
+    const [result, setResult] = useState<number | undefined>();
 
     useEffect(() => {
         const fetch = async () => {
@@ -75,7 +75,9 @@ const App = () => {
     }, []);
 
     useEffect(() => {
-        setSelectedRate(rates[0]);
+        if (rates[0]) {
+            setSelectedRate(rates[0]);
+        }
     }, [rates]);
 
     return (
@@ -94,7 +96,7 @@ const App = () => {
                     select
                     label="Target currency"
                     value={selectedRate?.code || ''}
-                    onChange={(event) => setSelectedRate(rates.find((r) => r.code === event.target.value) || null)}>
+                    onChange={(event) => setSelectedRate(rates.find((r) => r.code === event.target.value))}>
                     {rates.map((r) => (
                         <MenuItem key={r.code} value={r.code}>
                             {r.code} 1 : {r.rate}
