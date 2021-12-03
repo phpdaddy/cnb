@@ -1,7 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Rate } from './types/Rate';
-import { Button } from '@mui/material';
+import { Box, Button, MenuItem, TextField } from '@mui/material';
+import styled from 'styled-components';
+
+const Root = styled('div')`
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+`;
+
+const Content = styled(Box)`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 20px;
+
+    @media (max-width: 700px) {
+        flex-direction: column;
+        row-gap: 20px;
+        width: 100%;
+        align-items: stretch;
+    }
+`;
+
+const Heading = styled(Box)`
+    margin-bottom: 20px;
+`;
 
 const parseRates = (rateString: string): Rate[] => {
     const rates = [] as Rate[];
@@ -25,6 +50,7 @@ const parseRates = (rateString: string): Rate[] => {
 
 const App = () => {
     const [rates, setRates] = useState<Rate[]>([]);
+    const [selectedCurrency, setSelectedCurrency] = useState<string>('');
 
     useEffect(() => {
         const fetch = async () => {
@@ -41,16 +67,30 @@ const App = () => {
         fetch();
     }, []);
 
+    useEffect(() => {
+        setSelectedCurrency(rates[0]?.code || '');
+    }, [rates]);
+
     return (
-        <div>
-            {rates.map((r) => (
-                <div key={r.code}>
-                    <div>{r.code}</div>
-                    <div>{r.rate}</div>
-                </div>
-            ))}
-            <Button variant="contained">Calculate</Button>
-        </div>
+        <Root>
+            <Heading sx={{ typography: 'h4' }}>Exchange convertor</Heading>
+            <Content>
+                <TextField label="Amount" />
+                <Box sx={{ typography: 'h5' }}>CZK to</Box>
+                <TextField
+                    select
+                    label="Target currency"
+                    value={selectedCurrency}
+                    onChange={(event) => setSelectedCurrency(event.target.value)}>
+                    {rates.map((r) => (
+                        <MenuItem key={r.code} value={r.code}>
+                            {r.code} : {r.rate}
+                        </MenuItem>
+                    ))}
+                </TextField>
+                <Button variant="contained">Calculate</Button>
+            </Content>
+        </Root>
     );
 };
 
