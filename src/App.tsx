@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Rate } from './types/Rate';
+import { Button } from '@mui/material';
 
 const parseRates = (rateString: string): Rate[] => {
     const rates = [] as Rate[];
@@ -48,6 +49,7 @@ const App = () => {
                     <div>{r.rate}</div>
                 </div>
             ))}
+            <Button variant="contained">Calculate</Button>
         </div>
     );
 };
