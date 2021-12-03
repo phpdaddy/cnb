@@ -1,9 +1,5 @@
 import React from 'react';
 
-const App = () => (
-    <div className="App">
-
-    </div>
-);
+const App = () => <div />;
 
 export default App;

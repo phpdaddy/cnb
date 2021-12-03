@@ -1,0 +1,52 @@
+{
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:prettier/recommended",
+    "plugin:security/recommended"
+  ],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parser": "@typescript-eslint/parser",
+  "ignorePatterns": ["**/dist/**", "**/node_modules/**"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": ["react", "@typescript-eslint", "react-hooks", "security"],
+  "rules": {
+    "no-unused-vars": 0,
+    "react/prop-types": 0,
+    "react/no-find-dom-node": 0,
+    "react/display-name": 0,
+    "no-case-declarations": 0,
+    "no-prototype-builtins": 0,
+    "no-useless-escape": 0,
+    "@typescript-eslint/no-unused-vars": [
+      1,
+      {
+        "args": "none",
+        "ignoreRestSiblings": true
+      }
+    ],
+    "react-hooks/rules-of-hooks": "error",
+    "security/detect-non-literal-fs-filename": 0,
+    "no-console": ["warn", { "allow": ["info", "debug", "warn", "error", "clear"] }]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}
