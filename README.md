@@ -1,5 +1,4 @@
-# CNB
-***
+# CNB 
 ### Scripts
 #### `yarn`
 #### `yarn start`
