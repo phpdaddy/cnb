@@ -15,6 +15,7 @@ const Content = styled(Box)`
     flex-direction: row;
     align-items: center;
     column-gap: 20px;
+    margin-bottom: 20px;
 
     @media (max-width: 700px) {
         flex-direction: column;
@@ -26,6 +27,7 @@ const Content = styled(Box)`
 
 const Heading = styled(Box)`
     margin-bottom: 20px;
+    text-align: center;
 `;
 
 const parseRates = (rateString: string): Rate[] => {
@@ -48,9 +50,14 @@ const parseRates = (rateString: string): Rate[] => {
     return rates;
 };
 
+const isValidAmount = (amount: string): boolean => {
+    return !isNaN(Number.parseFloat(amount));
+};
 const App = () => {
     const [rates, setRates] = useState<Rate[]>([]);
-    const [selectedCurrency, setSelectedCurrency] = useState<string>('');
+    const [selectedRate, setSelectedRate] = useState<Rate | null>(null);
+    const [amount, setAmount] = useState<string>('');
+    const [result, setResult] = useState<number | null>(null);
 
     useEffect(() => {
         const fetch = async () => {
@@ -68,28 +75,46 @@ const App = () => {
     }, []);
 
     useEffect(() => {
-        setSelectedCurrency(rates[0]?.code || '');
+        setSelectedRate(rates[0]);
     }, [rates]);
 
     return (
         <Root>
-            <Heading sx={{ typography: 'h4' }}>Exchange convertor</Heading>
+            <Heading sx={{ typography: 'h4' }}>Currency convertor</Heading>
             <Content>
-                <TextField label="Amount" />
-                <Box sx={{ typography: 'h5' }}>CZK to</Box>
+                <TextField
+                    label="Amount"
+                    error={!isValidAmount(amount)}
+                    helperText={!isValidAmount(amount) ? 'Not valid number!' : ''}
+                    value={amount}
+                    onChange={(event) => setAmount(event.target.value)}
+                />
+                <Box sx={{ typography: 'h5', textAlign: 'center' }}>CZK to</Box>
                 <TextField
                     select
                     label="Target currency"
-                    value={selectedCurrency}
-                    onChange={(event) => setSelectedCurrency(event.target.value)}>
+                    value={selectedRate?.code || ''}
+                    onChange={(event) => setSelectedRate(rates.find((r) => r.code === event.target.value) || null)}>
                     {rates.map((r) => (
                         <MenuItem key={r.code} value={r.code}>
-                            {r.code} : {r.rate}
+                            {r.code} 1 : {r.rate}
                         </MenuItem>
                     ))}
                 </TextField>
-                <Button variant="contained">Calculate</Button>
+                <Button
+                    variant="contained"
+                    disabled={!isValidAmount(amount) && !!selectedRate}
+                    onClick={() => {
+                        selectedRate && setResult(Number.parseFloat(amount) * selectedRate.rate);
+                    }}>
+                    Calculate
+                </Button>
             </Content>
+            {result && (
+                <Box sx={{ typography: 'h5', textAlign: 'center' }}>
+                    {parseFloat(result.toFixed(3))} {selectedRate?.code}
+                </Box>
+            )}
         </Root>
     );
 };
